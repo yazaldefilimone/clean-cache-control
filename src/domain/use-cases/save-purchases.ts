@@ -1,13 +1,13 @@
 import {type} from "os";
 
 export interface SavePurchases{
-  save: (data:SavePurchases.Params) => Promise<void>
+  save: (data:Array<SavePurchases.Params>) => Promise<void>
 }
 
-namespace SavePurchases{
+export namespace SavePurchases{
   export type Params = {
     id:string
-    name:string,
+    value:number,
     date:Date
   }
 }
