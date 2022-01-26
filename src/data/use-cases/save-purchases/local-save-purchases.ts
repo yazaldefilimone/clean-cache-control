@@ -5,5 +5,6 @@ export class LocalSavePurchases{
 
   async save(): Promise<void>{
     this.cacheStorage.delete('purchases');
+    this.cacheStorage.insert('purchases')
   }
 }
