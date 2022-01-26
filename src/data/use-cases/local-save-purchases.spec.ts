@@ -2,20 +2,22 @@ class LocalSavePurchases{
   constructor(private readonly  cacheStorage:CacheStorage){} 
 
   save(): Promise<void>{
-    this.cacheStorage.delete();
+    this.cacheStorage.delete('purchases');
   }
 }
 
 interface CacheStorage{
-  delete: () => void
+  delete: (key:string) => void
 
 }
 
 class CacheStorageSpy implements CacheStorage{
   deleteCallsCount = 0;
+  key:srting
 
-  async delete():void{
-    this.deleteCallsCount++
+  async delete(key:string):void{
+    this.deleteCallsCount++;
+    this.key = key
   }
 }
 
@@ -42,7 +44,12 @@ describe("LocalSavePurchases", () => {
   it('should delete old cache when call sut.save', async () => {
     const { cacheStorage, sut } = makeSut();
     await sut.save();
-
     expect(cacheStorage.deleteCallsCount).toBe(1);
+  })
+  
+  it('should call delete with call correct key', async () => {
+    const { cacheStorage, sut } = makeSut();
+    await sut.save();
+    expect(cacheStorage.key).toBe('purchases');
   })
 }
