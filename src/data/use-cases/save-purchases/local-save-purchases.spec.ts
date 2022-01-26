@@ -91,5 +91,10 @@ describe("LocalSavePurchases", () => {
     expect(cacheStorage.insertValue).toEqual(purchases)
   })
   
-
+  it('should throw if insert throws', () => {
+    const { cacheStorage, sut } = makeSut();
+    cacheStorage.simulateInsertError();
+    const promise = sut.save(mockPurchase());
+    expect(promise).rejects.toThrow()
+  })  
 }
