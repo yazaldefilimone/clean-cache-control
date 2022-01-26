@@ -3,7 +3,7 @@ import { CacheStorage } from "@/data/protocols/cache";
 
 class CacheStorageSpy implements CacheStorage{
   deleteCallsCount = 0;
-  key:srting
+  key:string
 
   async delete(key:string):void{
     this.deleteCallsCount++;
