@@ -1,7 +1,7 @@
 import {type} from "os";
 
 export interface SavePurchases{
-  save: (data:SavePurchases.Purchases) => Promise<void>
+  save: (data:SavePurchases.Params) => Promise<void>
 }
 
 namespace SavePurchases{
