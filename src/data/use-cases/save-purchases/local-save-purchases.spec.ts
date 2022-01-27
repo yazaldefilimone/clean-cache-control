@@ -20,26 +20,28 @@ const makeSut = () :SutTypes => {
 describe("LocalSavePurchases", () => {
   it('should not delete cache when call sut.init', () => {
     const { cacheStorage } = makeSut();
-    expect(cacheStorage.deleteCallsCount).toBe(0);
-  }) 
+    expect(cacheStorage.messages).toEqual([]);
+  }
 
   it('should delete old cache when call sut.save', async () => {
     const { cacheStorage, sut } = makeSut();
     await sut.save(mockPurchase());
-    expect(cacheStorage.deleteCallsCount).toBe(1);
+    expect(cacheStorage.messages).toEqual([CacheStorageSpy.Message.delete, CacheStorageSpy.Message.insert]);
+
   })
   
   it('should call delete with call correct key', async () => {
     const { cacheStorage, sut } = makeSut();
     await sut.save(mockPurchase());
     expect(cacheStorage.deleteKey).toBe('purchases');
+    expect(cacheStorage.messages).toEqual([CacheStorageSpy.Message.delete, CacheStorageSpy.Message.insert]);
   })
 
   it('should not insert new Cache if delete  fails', async () => {
     const { cacheStorage, sut } = makeSut();
     cacheStorage.simulateDeleteError();
     const promise = sut.save(mockPurchase());
-    expect(cacheStorage.insertCallsCount).toBe(0);
+    expect(cacheStorage.messages).toEqual([CacheStorageSpy.Message.delete]);
     await expect(promise).rejects.toThrow()
   })
 
@@ -47,16 +49,18 @@ describe("LocalSavePurchases", () => {
     const { cacheStorage, sut } = makeSut();
     const purchases = mockPurchase()
     await sut.save(purchases);
-    expect(cacheStorage.insertCallsCount).toBe(1);
-    expect(cacheStorage.deleteCallsCount).toBe(1);
     expect(cacheStorage.insertKey).toBe('purchases');
     expect(cacheStorage.insertValue).toEqual(purchases)
+    expect(cacheStorage.messages).toEqual([CacheStorageSpy.Message.delete, CacheStorageSpy.Message.insert]);
   })
   
   it('should throw if insert throws', async () => {
     const { cacheStorage, sut } = makeSut();
     cacheStorage.simulateInsertError();
     const promise = sut.save(mockPurchase());
+    expect(cacheStorage.messages).toEqual([CacheStorageSpy.Message.delete, CacheStorageSpy.Message.insert]);
     await expect(promise).rejects.toThrow()
   })  
 }
+
+
